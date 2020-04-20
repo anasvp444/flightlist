@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flightlist/CustomShapeClipper.dart';
+import 'package:intl/intl.dart';
+
+import 'CustomAppBar.dart';
 
 void main() => runApp(MaterialApp(
   title:'Flight List',
@@ -23,9 +26,11 @@ class HomeScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Scaffold(
+      bottomNavigationBar: CustomAppBar(),
       body:Column(
         children: <Widget>[
-          HomeScreenTopPart()
+          HomeScreenTopPart(),
+          homeScreenbottom
         ],
       )
     );
@@ -183,4 +188,113 @@ class _ChoiseChipState extends State<ChoiseChip> {
 
 
 
+var homeScreenbottom = Column(
+  children:[
+    Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children:[
+          Text("Currently Watched item",style:TextStyle(color:Colors.black, fontSize: 16.0)),
+          Spacer(),
+          Text("VIEW ALL(12)",style:TextStyle(color:appTheme.primaryColor, fontSize: 16.0))
+        ]
+      ),
+    ),
+    Container(
+      height: 260.0,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children:cityCards
+      ),
+    )
+  ]
+);
 
+List<CityCard> cityCards = [
+  CityCard(
+      "assets/images/lasvegas.jpg", "Las Vegas", "Feb 2019", "45", 4299, 2250),
+  CityCard("assets/images/athens.jpg", "Athens", "Apr 2019", "50", 9999, 4159),
+  CityCard("assets/images/sydney.jpeg", "Sydney", "Dec 2018", "40", 5999, 2399)
+];
+
+final formatCurrency = new  NumberFormat.simpleCurrency();
+class CityCard extends StatelessWidget {
+
+  final String imagePath, cityName, monthYear , discount ;
+  final int oldPrice, newPrice;
+  CityCard(this.imagePath, this.cityName, this.monthYear , this.discount , this.oldPrice, this.newPrice);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal:8.0),
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  child: Stack(
+              children: [
+                Container(
+                  height: 230.0,
+                  width: 160.0,
+                  child:Image.asset(imagePath, fit: BoxFit.cover,)),
+                  Positioned(
+                    left: 0.0,
+                    bottom: 0.0,
+                    right: 0.0,
+                    height: 60.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient:LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors:[
+                            Colors.black, Colors.black.withOpacity(0.1)
+                          ]
+                        )
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left:10.0,
+                    bottom:10.0,
+                    right:10.0,
+                    child:Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children:[
+                      Text(cityName,style:TextStyle(color:Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      Text(monthYear,style:TextStyle(color:Colors.white, fontSize: 12.0, fontWeight: FontWeight.normal)),
+                        ]
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal:6.0 , vertical:2.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape:BoxShape.rectangle,
+                          borderRadius:BorderRadius.all(Radius.circular(10.0))
+                        ),
+                        child: Text("$discount%",style:TextStyle(color:Colors.black, fontSize: 12.0, fontWeight: FontWeight.normal))),
+                    ],)
+                  )
+              ],
+            ),
+          ),
+          Row(
+          mainAxisSize: MainAxisSize.max,  
+          mainAxisAlignment: MainAxisAlignment.start,  
+          children: [
+          SizedBox(width:5.0),
+          Text('${formatCurrency.format(newPrice)}',style:TextStyle(color:Colors.black, fontSize: 16.0, fontWeight: FontWeight.normal)),
+           SizedBox(width:5.0),
+          Text('${formatCurrency.format(oldPrice)}',style:TextStyle(color:Colors.grey, fontSize: 16.0, fontWeight: FontWeight.normal))
+        ],)
+        ],
+
+      ),
+    );
+  }
+}
